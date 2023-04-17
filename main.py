@@ -1,12 +1,6 @@
-from fastapi import FastAPI
-from utils import async_post
-
-
-PREFIX = "/api/v1"
-
-MICROSERVICES = {
-    "auth": "http://auth:8001/api/v1/auth",
-}
+from fastapi import FastAPI, APIRouter
+from const import PREFIX
+import auth
 
 
 app = FastAPI(
@@ -15,8 +9,7 @@ app = FastAPI(
     openapi_url=f"{PREFIX}/openapi.json",
 )
 
+router = APIRouter(prefix=PREFIX)
+router.include_router(auth.router)
 
-@app.get(f"{PREFIX}/register/")
-async def register():
-    response = await async_post(f"{MICROSERVICES['auth']}/register/")
-    return response
+app.include_router(router)
