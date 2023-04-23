@@ -17,3 +17,8 @@ router = APIRouter(
 async def register(auth: AuthSchema):
     res = await async_post(f"{auth_url}/register", auth.dict())
     return res.to_response()
+
+@router.post("/login")
+async def login(auth: AuthSchema):
+    res = await async_post(f"{auth_url}/login", auth.dict())
+    return res.to_response()
