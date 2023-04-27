@@ -1,7 +1,7 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Header
 
 from const import MICROSERVICES
-from utils import async_post
+from utils import async_get, async_post
 from auth.schemas import AuthSchema
 
 
@@ -21,4 +21,11 @@ async def register(auth: AuthSchema):
 @router.post("/login")
 async def login(auth: AuthSchema):
     res = await async_post(f"{auth_url}/login", auth.dict())
+    return res.to_response()
+
+@router.get("/tokens")
+async def tokens(refresh_token: str = Header()):
+    res = await async_get(f"{auth_url}/tokens", headers={
+        "Refresh-Token": refresh_token,
+    })
     return res.to_response()
