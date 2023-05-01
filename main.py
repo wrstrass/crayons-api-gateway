@@ -1,6 +1,6 @@
 from fastapi import FastAPI, APIRouter
 from const import PREFIX
-import auth
+import auth, user
 
 
 app = FastAPI(
@@ -11,5 +11,6 @@ app = FastAPI(
 
 router = APIRouter(prefix=PREFIX)
 router.include_router(auth.router)
+router.include_router(user.router)
 
 app.include_router(router)
