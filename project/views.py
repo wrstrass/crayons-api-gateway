@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Header
 
-from project.schemas import NameSchema
+from project.schemas import NameSchema, ProjectOverview
 from utils import async_post
 from const import MICROSERVICES
 
@@ -23,3 +23,19 @@ async def new_project(name: NameSchema, access_token: str = Header()):
         },
     )
     return res.to_response()
+
+# MOCK DATA
+@router.get("/")
+async def get_projects(access_token: str = Header()) -> list[ProjectOverview]:
+    return [
+        {
+            "name": "TestProject1",
+            "permission": "view",
+            "group": "user",
+        },
+        {
+            "name": "TestProject2",
+            "permission": "edit",
+            "group": "dev",
+        },
+    ]
