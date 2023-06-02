@@ -1,3 +1,4 @@
+from enum import StrEnum, auto
 from pydantic import BaseModel
 
 
@@ -5,7 +6,27 @@ class NameSchema(BaseModel):
     name: str
 
 
-class ProjectOverview(BaseModel):
+class Permission(StrEnum):
+    FORBID = auto()
+    VIEW = auto()
+    EDIT = auto()
+    FULL = auto()
+
+class PermissionSet(BaseModel):
+    owner: Permission = Permission.FULL
+    dev: Permission = Permission.EDIT
+    user: Permission = Permission.VIEW
+    etc: Permission = Permission.FORBID
+
+
+class Members(BaseModel):
+    owners: list[int] = []
+    devs: list[int] = []
+    users: list[int] = []
+
+
+class ProjectSchema(BaseModel):
     name: str
-    permission: str
-    group: str
+    permissions: PermissionSet
+    members: Members
+    diagrams: list[str]

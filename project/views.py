@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Header
 
-from project.schemas import NameSchema, ProjectOverview
+from project.schemas import NameSchema, ProjectSchema
 from utils import async_post
 from const import MICROSERVICES
 
@@ -14,7 +14,7 @@ router = APIRouter(
 
 
 @router.post("/")
-async def new_project(name: NameSchema, access_token: str = Header()):
+async def new_project(name: NameSchema, access_token: str = Header()) -> ProjectSchema:
     res = await async_post(
         f"{projects_url}/",
         name.dict(),
@@ -26,7 +26,7 @@ async def new_project(name: NameSchema, access_token: str = Header()):
 
 # MOCK DATA
 @router.get("/")
-async def get_projects(access_token: str = Header()) -> list[ProjectOverview]:
+async def get_projects(access_token: str = Header()) -> list[ProjectSchema]:
     return [
         {
             "name": "TestProject1",
