@@ -40,3 +40,13 @@ async def async_post(url: str, data: dict = None, **kwargs) -> AsyncResponse:
                 headers=response.headers,
                 body=body,
             )
+
+async def async_put(url: str, data: dict = None, **kwargs) -> AsyncResponse:
+    async with aiohttp.ClientSession() as session:
+        async with session.put(url, json=data, **kwargs) as response:
+            body = await response.json()
+            return AsyncResponse(
+                status=response.status,
+                headers=response.headers,
+                body=body,
+            )
