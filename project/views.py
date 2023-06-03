@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Header
 
 from project.schemas import NameSchema, ProjectSchema
-from utils import async_post
+from utils import async_post, async_get
 from const import MICROSERVICES
 
 
@@ -39,3 +39,13 @@ async def get_projects(access_token: str = Header()) -> list[ProjectSchema]:
             "group": "dev",
         },
     ]
+
+@router.get("/{project_name}/")
+async def get_project(project_name: str, access_token: str | None = Header(default=None)) -> ProjectSchema:
+    res = await async_get(
+        f"{projects_url}/{project_name}/",
+        headers={} if access_token is None else {
+            "Access-Token": access_token,
+        },
+    )
+    return res.to_response()
