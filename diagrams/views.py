@@ -37,3 +37,13 @@ async def get_diagram(diagram_oid: str, access_token: str = Header()):
 async def get_diagram_shapes(diagram_oid: str, access_token: str = Header()):
     res = await async_get(f"{diagrams_url}/{diagram_oid}/shapes")
     return res.to_response()
+
+@router.get("/{diagram_oid}/access")
+async def get_diagram_access(diagram_oid: str, access_token: str = Header()):
+    res = await async_get(
+        f"{projects_url}/{diagram_oid}/access",
+        headers={
+            "Access-Token": access_token,
+        },
+    )
+    return res.to_response()
