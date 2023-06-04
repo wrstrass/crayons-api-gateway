@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Header
 
 from diagrams.schemas import NameDescriptionSchema
-from utils import async_post, async_put
+from utils import async_get, async_post, async_put
 from const import MICROSERVICES
 
 
@@ -26,4 +26,14 @@ async def new_diagram(project_name: str, data: NameDescriptionSchema, access_tok
             "Access-Token": access_token,
         },
     )
+    return res.to_response()
+
+@router.get("/{diagram_oid}/")
+async def get_diagram(diagram_oid: str, access_token: str = Header()):
+    res = await async_get(f"{diagrams_url}/{diagram_oid}/")
+    return res.to_response()
+
+@router.get("/{diagram_oid}/shapes")
+async def get_diagram_shapes(diagram_oid: str, access_token: str = Header()):
+    res = await async_get(f"{diagrams_url}/{diagram_oid}/shapes")
     return res.to_response()
