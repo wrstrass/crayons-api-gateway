@@ -16,6 +16,15 @@ router = APIRouter(
 
 @router.post("/{project_name}/")
 async def new_diagram(project_name: str, data: NameDescriptionSchema, access_token: str = Header()):
+    res = await async_get(
+        f"{projects_url}/{project_name}/",
+        headers={
+            "Access-Token": access_token,
+        },
+    )
+    if res.status != 200:
+        return res.to_response()
+
     res = await async_post(
         f"{diagrams_url}/",
         data.dict(),
