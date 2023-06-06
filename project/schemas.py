@@ -34,3 +34,8 @@ class ProjectSchema(BaseModel):
     permissions: PermissionSet
     members: Members
     diagrams: list[str]
+
+class ProjectOverview(BaseModel):
+    name: str
+    group: str
+    permission: Permission
