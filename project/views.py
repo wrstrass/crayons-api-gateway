@@ -12,6 +12,7 @@ from const import MICROSERVICES
 
 
 projects_url = MICROSERVICES["projects"]
+diagrams_url = MICROSERVICES["diagrams"]
 
 router = APIRouter(
     prefix="/projects",
@@ -41,14 +42,21 @@ async def get_projects(access_token: str = Header()) -> list[ProjectOverview]:
     return res.to_response()
 
 @router.get("/{project_name}/")
-async def get_project(project_name: str, access_token: str | None = Header(default=None)) -> ProjectSchema:
+async def get_project(project_name: str, access_token: str | None = Header(default=None)):
     res = await async_get(
         f"{projects_url}/{project_name}/",
         headers={} if access_token is None else {
             "Access-Token": access_token,
         },
     )
-    return res.to_response()
+
+    diagrams = []
+    for diagram_oid in res.body["diagrams"]:
+        diagram = await async_get(f"{diagrams_url}/{diagram_oid}/")
+        diagrams.append(diagram.body)
+    res.body["diagrams"] = diagrams
+
+    return res.body
 
 @router.put("/{project_name}/user")
 async def project_add_user(project_name: str, data: UserAndGroupSchema, access_token: str = Header()) -> ProjectSchema:
