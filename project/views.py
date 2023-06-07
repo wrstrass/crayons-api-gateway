@@ -13,6 +13,7 @@ from const import MICROSERVICES
 
 projects_url = MICROSERVICES["projects"]
 diagrams_url = MICROSERVICES["diagrams"]
+user_url = MICROSERVICES["user"]
 
 router = APIRouter(
     prefix="/projects",
@@ -55,6 +56,13 @@ async def get_project(project_name: str, access_token: str | None = Header(defau
         diagram = await async_get(f"{diagrams_url}/{diagram_oid}/")
         diagrams.append(diagram.body)
     res.body["diagrams"] = diagrams
+
+    for group in res.body["members"].keys():
+        members = []
+        for user_id in res.body["members"][group]:
+            username = await async_get(f"{user_url}/{user_id}")
+            members.append(username.body)
+        res.body["members"][group] = members
 
     return res.body
 
